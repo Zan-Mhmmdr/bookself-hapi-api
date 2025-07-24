@@ -1,7 +1,7 @@
 const { nanoid } = require("nanoid");
 const { books } = require("./books");
 
-// Add a new book handler
+// CREATE
 const addBookHandler = (request, h) => {
   const {
     name,
@@ -66,6 +66,7 @@ const addBookHandler = (request, h) => {
     .code(201);
 };
 
+// READ
 const getAllBooksHandler = () => ({
   status: "success",
   data: {
@@ -77,6 +78,7 @@ const getAllBooksHandler = () => ({
   },
 });
 
+// READ by ID
 const getBookByIdHandler = (request, h) => {
   const { bookId } = request.params;
   const book = books.find((b) => b.id === bookId);
@@ -94,12 +96,14 @@ const getBookByIdHandler = (request, h) => {
     .response({
       status: "success",
       data: {
-        book: book ? book : null,
+        book: book 
       },
     })
     .code(200);
 };
 
+
+// UPDATE
 const updateBookByIdHandler = (request, h) => {
   const { bookId } = request.params;
   const {
@@ -168,6 +172,7 @@ const updateBookByIdHandler = (request, h) => {
     .code(200);
 };
 
+// DELETE
 const deleteBookByIdHandler = (request, h) => {
   const { bookId } = request.params;
 
@@ -187,7 +192,7 @@ const deleteBookByIdHandler = (request, h) => {
   return h.response({
     status: "fail",
     message: "Buku gagal dihapus. Id tidak ditemukan",
-  });
+  }).code(404);
 };
 
 module.exports = {
