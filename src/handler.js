@@ -67,16 +67,38 @@ const addBookHandler = (request, h) => {
 };
 
 // READ
-const getAllBooksHandler = () => ({
-  status: "success",
-  data: {
-    books: books.map((book) => ({
-      id: book.id,
-      name: book.name,
-      publisher: book.publisher,
-    })),
-  },
-});
+const getAllBooksHandler = (request, h) => {
+  const { name, reading, finished } = request.query;
+
+  if (name !== undefined) {
+    filteredBooks = books.filter((book) =>
+      book.name.toLowerCase().includes(name.toLowerCase())
+    );
+  }
+
+  if (reading !== undefined) {
+    filteredBooks = filteredBooks.filter(
+      (book) => book.reading === !!Number(reading)
+    );
+  }
+
+  if (finished !== undefined) {
+    filteredBooks = filteredBooks.filter(
+      (book) => book.finished === !!Number(finished)
+    );
+  }
+
+  return h.response({
+    status: "success",
+    data: {
+      books: filteredBooks.map(({ id, name, publisher }) => ({
+        id,
+        name,
+        publisher,
+      })),
+    },
+  });
+};
 
 // READ by ID
 const getBookByIdHandler = (request, h) => {
@@ -96,12 +118,11 @@ const getBookByIdHandler = (request, h) => {
     .response({
       status: "success",
       data: {
-        book: book 
+        book: book,
       },
     })
     .code(200);
 };
-
 
 // UPDATE
 const updateBookByIdHandler = (request, h) => {
@@ -189,10 +210,12 @@ const deleteBookByIdHandler = (request, h) => {
     return response;
   }
 
-  return h.response({
-    status: "fail",
-    message: "Buku gagal dihapus. Id tidak ditemukan",
-  }).code(404);
+  return h
+    .response({
+      status: "fail",
+      message: "Buku gagal dihapus. Id tidak ditemukan",
+    })
+    .code(404);
 };
 
 module.exports = {
