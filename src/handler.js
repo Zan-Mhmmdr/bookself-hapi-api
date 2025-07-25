@@ -70,6 +70,8 @@ const addBookHandler = (request, h) => {
 const getAllBooksHandler = (request, h) => {
   const { name, reading, finished } = request.query;
 
+  let filteredBooks = books;
+
   if (name !== undefined) {
     filteredBooks = books.filter((book) =>
       book.name.toLowerCase().includes(name.toLowerCase())
