@@ -3,23 +3,25 @@ const Hapi = require('@hapi/hapi');
 const routes = require('./routes');
 
 const createServer = async () => {
-  return Hapi.server({
+  const server = Hapi.server({
     port: 9000,
     host: 'localhost',
     routes: {
       cors: {
-        origin: ['*'], // Allow all origins (use with caution)
+        origin: ['*'], // Use with caution in production
       },
     },
   });
+
+  server.route(routes);
+
+  return server;
 };
 
-const init = async () => {
+const startServer = async () => {
+  const server = await createServer();
+
   try {
-    const server = await createServer();
-
-    server.route(routes);
-
     await server.start();
     console.log(`✅ Server running at: ${server.info.uri}`);
   } catch (err) {
@@ -28,4 +30,4 @@ const init = async () => {
   }
 };
 
-init();
+startServer();
